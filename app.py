@@ -55,17 +55,25 @@ def handle_follow(event):
 
 @line_handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
+    print(f"收到訊息：{event.message.text}")  # debug log
+
     with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
-        if event.message.text == 'postback':
+
+        if event.message.text.lower() == 'postback':
             buttons_template = ButtonsTemplate(
-                title='Postback Sample',
-                text='Postback Action',
+                title='這是一個 Postback 按鈕範例',
+                text='請點選下方按鈕',
                 actions=[
-                    PostbackAction(label='Postback Action', text='Postback Action Button Clicked!', data='postback'),
-                ])
+                    PostbackAction(
+                        label='點我回傳 postback',
+                        text='你點了按鈕！',
+                        data='postback'
+                    )
+                ]
+            )
             template_message = TemplateMessage(
-                alt_text='Postback Sample',
+                alt_text='這是一個按鈕訊息',
                 template=buttons_template
             )
             line_bot_api.reply_message(
@@ -74,11 +82,34 @@ def handle_message(event):
                     messages=[template_message]
                 )
             )
+        else:
+            # fallback 回覆
+            line_bot_api.reply_message(
+                ReplyMessageRequest(
+                    reply_token=event.reply_token,
+                    messages=[{
+                        "type": "text",
+                        "text": f"你說的是：{event.message.text}"
+                    }]
+                )
+            )
+
 
 @line_handler.add(PostbackEvent)
 def handle_postback(event):
+    print(f"收到 Postback 事件，data: {event.postback.data}")
     if event.postback.data == 'postback':
-        print('Postback event is triggered')
+        with ApiClient(configuration) as api_client:
+            line_bot_api = MessagingApi(api_client)
+            line_bot_api.reply_message(
+                ReplyMessageRequest(
+                    reply_token=event.reply_token,
+                    messages=[{
+                        "type": "text",
+                        "text": "你點擊了 Postback 按鈕！"
+                    }]
+                )
+            )
 
 if __name__ == "__main__":
     app.run()
