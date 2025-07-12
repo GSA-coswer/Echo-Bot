@@ -51,8 +51,12 @@ def callback():
     try:
         line_handler.handle(body, signature)
     except InvalidSignatureError:
-        app.logger.info("Invalid signature. Please check your channel access token/channel secret.")
+        app.logger.error("Invalid signature!")
         abort(400)
+    except Exception as e:
+        app.logger.error(f"Webhook 處理失敗：{str(e)}")
+        abort(500)
+
 
     return 'OK'
 
