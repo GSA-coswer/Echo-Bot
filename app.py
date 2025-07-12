@@ -48,10 +48,13 @@ def callback():
 
     return 'OK'
 
-# Handle follow event
+# 歡迎訊息
 @line_handler.add(FollowEvent)
 def handle_follow(event):
-    print(f'Got {event.type} event')
+    welcome_message = ("嗨～歡迎加入【國立臺北科技大學畢聯會 LINE Bot】!\n"
+                    "我是你的畢業小秘書\n"
+                    "可以幫你查詢畢業典禮資訊、學士服發放、活動最新公告⋯⋯\n"
+                    "點選下方選單開始使用吧～")
 
 @line_handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
