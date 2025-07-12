@@ -19,7 +19,6 @@ from linebot.v3.webhooks import (
     MessageEvent,
     FollowEvent,
     PostbackEvent,
-    TextSendMessage,
     TextMessageContent
 )
 
@@ -49,21 +48,10 @@ def callback():
 
     return 'OK'
 
-# 歡迎訊息
+# Handle follow event
 @line_handler.add(FollowEvent)
 def handle_follow(event):
-    welcome_message = ("嗨～歡迎加入【國立臺北科技大學畢聯會 LINE Bot】!\n"
-                    "我是你的畢業小秘書\n"
-                    "可以幫你查詢畢業典禮資訊、學士服發放、活動最新公告⋯⋯\n"
-                    "點選下方選單開始使用吧～")
-    with ApiClient(configuration) as api_client:
-        line_bot_api = MessagingApi(api_client)
-        line_bot_api.reply_message(
-            ReplyMessageRequest(
-                reply_token=event.reply_token,
-                messages=[TextSendMessage(text=welcome_message)]
-            )
-        )
+    print(f'Got {event.type} event')
 
 @line_handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
