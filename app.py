@@ -205,4 +205,7 @@ def create_rich_menu_1():
             
         line_bot_api.set_default_rich_menu(rich_menu_id=rich_menu_id)
         
-# create_rich_menu_1()
+create_rich_menu_1()
+
+if __name__ == "__main__":
+    app.run()
